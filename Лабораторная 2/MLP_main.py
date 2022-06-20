@@ -26,11 +26,12 @@ learning_rate = 0.1
 net = MLP(inputSize, outputSize, learning_rate, hiddenSizes)
 # Обучаем сеть
 i = 0
-while sum(abs(y-(net.predict(X) > 0.5))) != 0:
-    i += 1
-    net.train(X, y)
+#while sum(abs(y-(net.predict(X) > 0.5))) != 0:
+#    i += 1
+ #   net.train(X, y)
+pr = net.trainSDG( X, y)
 
 # считаем ошибку на обучающей выборке
-pr = net.predict(X)
+#pr = net.predict(X)
 print(sum(abs(y-(pr>0.5))))
 print("Обучили за " + str(i) + " итераций")

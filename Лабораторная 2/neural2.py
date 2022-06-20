@@ -55,7 +55,7 @@ class MLP:
         self.layers = [input_, hidden_, output_]
         return self.layers[-1]
     
-    
+   
     # backprop собственной персоной
     # на вход принимает скорость обучения, реальные ответы, предсказанные сетью ответы и выходы всех слоев после прямого прохода
     def backward(self, target):
@@ -81,70 +81,7 @@ class MLP:
             # обновляем веса слоя
             self.weights[i - 1] += self.learning_rate * dw
             
-    def SDG(self, X, Y):
-        N=len(X)
-        w=np.random.random((Y.shape[1]))
-        nu = 1
-        lambd = 1
-        Wprev = np.random.random((Y.shape[1]))
-        cost=[0.5]
-        current_cost = [0]
-
-        while np.equal(cost, current_cost) and np.equal(w, Wprev):
-            new_ind = np.random.permutation(N)
-            x = X[new_ind]
-            Y = Y[new_ind]
-            y_pred = self.sigmoid(-np.dot(x, w))
-            Wprev = np.copy(w)
-            cost = (1/N)*np.sum(((self.sigmoid(-np.dot(x, w)))-Y)**2)
             
-            #вычисляем градиент
-            dw=np.dot((y_pred-Y),x)
-            
-            #обновляем веса
-            w = w - nu * dw
-            #записываем результат в список
-            current_cost = (1-lambd)*cost + lambd*cost
-        return np.dot(X, w)
-    def forwardSDG(self, x):
-        input_ = x # входные сигналы
-        hidden_ = self.sigmoid(np.dot(input_, self.weights[0])) # выход скрытого слоя = сигмоида(входные сигналы*веса скрытого слоя)
-        output_ = self.sigmoid(np.dot(hidden_, self.weights[1]))# выход сети (последнего слоя) = сигмоида(выход скрытого слоя*веса выходного слоя)
-        
-        self.layers = [input_, hidden_, output_]
-        return self.layers[-1]
-    def backwardSDG(self, target):
-        # считаем производную ошибки сети
-        err = (target - self.layers[-1])
-    
-        # прогоняем производную ошибки обратно ко входу, считая градиенты и корректируя веса
-        # для этого используем chain rule
-        # цикл перебирает слои от последнего к первому
-        for i in range(len(self.layers)-1, 0, -1):
-            # градиент слоя = ошибка слоя * производную функции активации * на входные сигналы слоя
-            
-            # ошибка слоя * производную функции активации
-            err_delta = err * self.derivative_sigmoid(self.layers[i])       
-            
-            # пробрасываем ошибку на предыдущий слой
-            err = np.dot(err_delta, self.weights[i - 1].T)
-            
-            # ошибка слоя * производную функции активации * на входные сигналы слоя
-            dw = np.dot(self.layers[i - 1].T, err_delta)
-            
-            # обновляем веса слоя
-            self.weights[i - 1] += self.learning_rate * dw
-        
-    def trainSDG(self, X, Y):
-        #self.weights[0] = self.SDG(X, Y)
-        #self.weights[1] = self.SDG(X*)
-        input_ = X # входные сигналы
-        hidden_ = self.SDG(X, Y) # выход скрытого слоя = сигмоида(входные сигналы*веса скрытого слоя)
-        output_ = self.SDG(hidden_, Y) # выход сети (последнего слоя) = сигмоида(выход скрытого слоя*веса выходного слоя)
-        
-        self.layers = [input_, hidden_, output_]
-        return self.layers[-1]
-        
     
     # функция обучения чередует прямой и обратный проход
     def train(self, x_values, target):

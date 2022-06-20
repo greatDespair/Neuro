@@ -24,10 +24,10 @@ y = df.iloc[0:100, 4].values
 y = np.where(y == "Iris-setosa", 1, 0)
 
 # возьмем два признака, чтобы было удобне визуализировать задачу
-X = df.iloc[0:100, [0, 2]].values
+X = df.iloc[0:100,[0,1, 2]].values
 
 # добавим фиктивный признак для удобства матричных вычслений
-X = np.concatenate([np.ones((len(X),1)), X], axis = 1)
+#X = np.concatenate([np.ones((len(X),1)), X], axis = 1)
 
 # Признаки в X, ответы в y - постмотрим на плоскости как выглядит задача (y==1)
 plt.figure
